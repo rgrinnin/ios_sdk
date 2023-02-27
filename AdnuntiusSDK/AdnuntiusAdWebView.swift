@@ -112,6 +112,7 @@ private class HandlerAdaptor: LoadAdHandler {
 
 public class AdnuntiusAdWebView: WKWebView, WKUIDelegate, WKNavigationDelegate, WKScriptMessageHandler {
     public let logger: Logger = Logger()
+    public var navigationHandler: ((URL) -> ())?
     
     private var loadAdHandler: LoadAdHandler?
     
@@ -397,8 +398,23 @@ public class AdnuntiusAdWebView: WKWebView, WKUIDelegate, WKNavigationDelegate, 
             decisionHandler(.allow)
             return
         }
-        
-        if (navigationType == .linkActivated) {
+
+     if let handler = navigationHandler {
+            self.logger.debug("custom navigation handler click Url: \(urlAbsoluteString)")
+            handler(url)
+            decisionHandler(.cancel)
+            return
+     } else if (navigationType == .linkActivated) {
+         self.logger.debug("Normal Click Url: \(urlAbsoluteString)")
+         doClick(url)
+         decisionHandler(.cancel)
+         return
+     } {
+           self.logger.debug("Normal Click Url: \(urlAbsoluteString)")
+
+           decisionHandler(.cancel)
+           return
+       } else if (navigationType == .linkActivated) {
             self.logger.debug("Normal Click Url: \(urlAbsoluteString)")
             doClick(url)
             decisionHandler(.cancel)
