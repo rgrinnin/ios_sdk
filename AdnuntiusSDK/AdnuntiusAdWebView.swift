@@ -399,7 +399,7 @@ public class AdnuntiusAdWebView: WKWebView, WKUIDelegate, WKNavigationDelegate, 
             return
         }
 
-        if let handler = navigationHandler {
+        if let handler = navigationHandler, navigationType == .linkActivated {
             self.logger.debug("custom navigation handler click Url: \(urlAbsoluteString)")
             let decision = handler(url)
             decisionHandler(decision)
